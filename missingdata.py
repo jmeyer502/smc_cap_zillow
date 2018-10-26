@@ -40,10 +40,29 @@ def mergefiles():
     prop_2017_error = pd.merge(prop_2017,train_2017,on='parcelid',how = 'outer', left_index = True, right_index=True)
     return prop_2016_error, prop_2017_error
 
-
-# barchart of percent of data missing 
-def percentmissingplot():
-   print("Percent of data missing in 2016 data")
+# display number of missing values
+def findmissingvalues():
+    missing = prop_2016_error.isnull().sum().sort_values(ascending = False)
+    missingpercent = missing/prop_2016_error['parcelid'].count()
+    vartypes = prop_2016_error.dtypes
+    pmissing2016 = pd.concat([vartypes, missing, missingpercent], axis = 1, keys =['var type', 'missing rows', 'percent'], sort=True
+                     ).sort_values(by = 'missing rows', ascending = False )
+    print("Missing values in 2016 data")
+    print("*****************************************************************")
+    print(pmissing2016)
+    
+    missing = prop_2017_error.isnull().sum().sort_values(ascending = False)
+    missingpercent = missing/prop_2017_error['parcelid'].count()
+    vartypes = prop_2017_error.dtypes
+    pmissing2017 = pd.concat([vartypes, missing, missingpercent], axis = 1, keys =['var type', 'missing rows', 'percent'], sort=True
+                     ).sort_values(by = 'missing rows', ascending = False )
+    print("Missing values in 2017 data")
+    print("*****************************************************************")
+    print(pmissing2017)
+   
+# barchart of number of missing values per column 
+def missingplot():
+   print("Missing values in 2016 data")
    print("*****************************************************************")
    missing_df = prop_2016_error.isnull().sum(axis=0).reset_index()
    missing_df.columns = ['column_name', 'missing_count']
@@ -60,7 +79,7 @@ def percentmissingplot():
    ax.set_title("Number of missing values in each column")
    plt.show()
 
-   print("Percent of data missing in 2017 data")
+   print("Missing values in 2017 data")
    print("*****************************************************************")
    missing_df = prop_2017_error.isnull().sum(axis=0).reset_index()
    missing_df.columns = ['column_name', 'missing_count']
@@ -76,30 +95,10 @@ def percentmissingplot():
    ax.set_xlabel("Count of missing values")
    ax.set_title("Number of missing values in each column")
    plt.show()
-   
-# display percent of data missing 
-def percentmissing():
-    missing = prop_2016_error.isnull().sum().sort_values(ascending = False)
-    missingpercent = missing/prop_2016_error['parcelid'].count()
-    vartypes = prop_2016_error.dtypes
-    pmissing2016 = pd.concat([vartypes, missing, missingpercent], axis = 1, keys =['var type', 'missing rows', 'percent'], sort=True
-                     ).sort_values(by = 'missing rows', ascending = False )
-    print("Percent of data missing in 2016 data")
-    print("*****************************************************************")
-    print(pmissing2016)
-    
-    missing = prop_2017_error.isnull().sum().sort_values(ascending = False)
-    missingpercent = missing/prop_2017_error['parcelid'].count()
-    vartypes = prop_2017_error.dtypes
-    pmissing2017 = pd.concat([vartypes, missing, missingpercent], axis = 1, keys =['var type', 'missing rows', 'percent'], sort=True
-                     ).sort_values(by = 'missing rows', ascending = False )
-    print("Percent of data missing in 2017 data")
-    print("*****************************************************************")
-    print(pmissing2017)
     
     
 # call functions
 prop_2016, prop_2017, train_2016, train_2017 = readfiles()
 prop_2016_error, prop_2017_error = mergefiles()
-percentmissing()
-percentmissingplot()    
+findmissingvalues()
+missingplot()    
